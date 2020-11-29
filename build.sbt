@@ -110,11 +110,12 @@ lazy val commonSettings = Seq(
 
 lazy val core = (project in file("core")).settings(commonSettings: _*).settings(
   name := "core",
-  description := "Core, implementation and technology-dependent project used by all other " +
-    "components of this project.",
+  description :=
+    "Core, implementation and technology-dependent project used by all other " +
+      "components of this project.",
   libraryDependencies ++= coreDependencies
 )
 
-lazy val template = (project in file(".")).settings(commonSettings: _*).aggregate(core).dependsOn(
+lazy val youtube = (project in file(".")).settings(commonSettings: _*).aggregate(core).dependsOn(
   core % "test->test;compile->compile"
 )

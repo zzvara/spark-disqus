@@ -1,0 +1,45 @@
+apiVersion: "sparkoperator.k8s.io/v1beta2"
+kind: SparkApplication
+metadata:
+  name: stube
+  namespace: experimental
+spec:
+  type: Scala
+  mode: cluster
+  nodeSelector:
+    spark.sztaki.hu: allowed
+  image: "zzvara/spark:3.0.1"
+  imagePullPolicy: Always
+  mainClass: hu.sztaki.spark.youtube.Job
+  mainApplicationFile: "stube-assembly-0.0.1.jar"
+  sparkVersion: "3.0.1"
+  hadoopConfigMap: spark-default-configuration
+  sparkConf:
+    "spark.default.parallelism": "10"
+    "spark.executor.extraJavaOptions": "-XX:ParallelGCThreads=6 -XX:ConcGCThreads=2 -XX:+UseG1GC -XX:InitiatingHeapOccupancyPercent=60"
+    "spark.kubernetes.executor.deleteOnTermination": "false"
+    "spark.serializer": "org.apache.spark.serializer.KryoSerializer"
+    # Required since Spark Operator does not support Spark 3.0.0.
+    "spark.kubernetes.executor.podTemplateFile": "/opt/spark/configuration/executor-template.yaml"
+  restartPolicy:
+    type: Never
+  volumes:
+    - name: executor-template
+      configMap:
+        name: spark-executor-template
+  driver:
+    cores: 1
+    memory: "2048m"
+    labels:
+      version: 3.0.1
+    serviceAccount: spark-operator-sparkoperator
+    volumeMounts:
+      - name: executor-template
+        mountPath: /opt/spark/configuration/executor-template.yaml
+        subPath: executor-template.yaml
+  executor:
+    cores: 2
+    instances: 1
+    memory: 2g
+    labels:
+      version: 3.0.1
