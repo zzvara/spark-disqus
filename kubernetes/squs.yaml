@@ -1,7 +1,7 @@
 apiVersion: "sparkoperator.k8s.io/v1beta2"
 kind: SparkApplication
 metadata:
-  name: stube
+  name: squs
   namespace: experimental
 spec:
   type: Scala
@@ -10,8 +10,8 @@ spec:
     spark.sztaki.hu: allowed
   image: "zzvara/spark:3.0.1"
   imagePullPolicy: Always
-  mainClass: hu.sztaki.spark.youtube.Job
-  mainApplicationFile: "stube-assembly-0.0.1.jar"
+  mainClass: hu.sztaki.spark.disqus.Job
+  mainApplicationFile: "squs-assembly-0.0.1.jar"
   sparkVersion: "3.0.1"
   hadoopConfigMap: spark-default-configuration
   sparkConf:

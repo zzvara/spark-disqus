@@ -1,4 +1,4 @@
-package hu.sztaki.spark.youtube
+package hu.sztaki.spark.disqus
 
 import org.scalatest.concurrent.Eventually
 import org.scalatest.matchers.should.Matchers

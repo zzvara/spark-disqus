@@ -1,4 +1,4 @@
-package hu.sztaki.spark.youtube.configuration
+package hu.sztaki.spark.disqus.configuration
 
 import java.io.{File, Serializable}
 import java.nio.charset.StandardCharsets
@@ -7,8 +7,8 @@ import java.util.Properties
 
 import com.typesafe.config.ConfigException.{Missing, WrongType}
 import com.typesafe.config._
-import hu.sztaki.spark.youtube.configuration.Configuration.Exception.Restricted
-import hu.sztaki.spark.youtube.{Factory, Logger}
+import hu.sztaki.spark.disqus.configuration.Configuration.Exception.Restricted
+import hu.sztaki.spark.disqus.{Factory, Logger}
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration.Duration

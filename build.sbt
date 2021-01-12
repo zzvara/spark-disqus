@@ -116,6 +116,7 @@ lazy val core = (project in file("core")).settings(commonSettings: _*).settings(
   libraryDependencies ++= coreDependencies
 )
 
-lazy val youtube = (project in file(".")).settings(commonSettings: _*).aggregate(core).dependsOn(
-  core % "test->test;compile->compile"
-)
+lazy val `sztaki-spark-disqus` =
+  (project in file(".")).settings(commonSettings: _*).aggregate(core).dependsOn(
+    core % "test->test;compile->compile"
+  )

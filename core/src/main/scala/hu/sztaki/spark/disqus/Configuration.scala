@@ -1,12 +1,12 @@
-package hu.sztaki.spark.youtube
+package hu.sztaki.spark.disqus
 
 class Configuration(silent: Boolean = false)(implicit
 factory: Factory.forConfiguration[Configuration])
  extends configuration.Configuration[Configuration](
-   "stube.conf",
-   "stube.defaults.conf",
+   "squs.conf",
+   "squs.defaults.conf",
    true,
-   Some("stube"),
+   Some("squs"),
    silent
  )
    with Serializable

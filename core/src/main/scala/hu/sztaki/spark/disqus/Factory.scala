@@ -1,4 +1,4 @@
-package hu.sztaki.spark.youtube
+package hu.sztaki.spark.disqus
 
 abstract class Factory[E] {
   def apply(): E

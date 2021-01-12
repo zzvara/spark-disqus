@@ -1,14 +1,14 @@
-package hu.sztaki.spark.youtube
+package hu.sztaki.spark.disqus
 
 class suiteJob extends stubeFunSpec {
   describe("The Youtube Spark job") {
     var job: Option[Job] = None
-    var results: Iterable[Datum] = Iterable.empty
+    var results: Iterable[Result] = Iterable.empty
 
     it("should be able to get created,") {
-      job = Some(new Job(List(_.foreachRDD {
-        datum => results = results ++ datum.collect()
-      })))
+      job = Some(new Job(List {
+        comments => results = results ++ comments.collect()
+      }))
     }
     it("should be able to get started,") {
       job.get.start()

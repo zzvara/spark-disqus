@@ -1,4 +1,4 @@
-package hu.sztaki.spark.youtube
+package hu.sztaki.spark.disqus
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.DurationInt
@@ -75,11 +75,11 @@ object Try extends Logger {
     */
   def eatAnyShit[R](f: => R): Option[R] =
     scala.util.Try(f) match {
-      case Failure(exception) =>
+      case scala.util.Failure(exception) =>
         log.error(s"Encountered exception [${exception.getClass.getName}] of message " +
           s"[${exception.getMessage}]!")
         None
-      case Success(v) => Some(v)
+      case scala.util.Success(v) => Some(v)
     }
 
   /**
@@ -129,13 +129,13 @@ object Try extends Logger {
 
   def logAndThrow[R](t: scala.util.Try[R], logger: String => Unit = log.error(_)): R =
     t match {
-      case Failure(exception) =>
+      case scala.util.Failure(exception) =>
         logger(
           s"Exception encountered with class [${exception.getClass.getName}] " +
             s"and message [${exception.getMessage}]!"
         )
         throw exception
-      case Success(value) =>
+      case scala.util.Success(value) =>
         value
     }
 

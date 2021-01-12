@@ -5,7 +5,7 @@ set -x
 
 export BUILD_VERSION=$(<version)
 export NAMESPACE="spark"
-export APPLICATION="youtube"
+export APPLICATION="disqus"
 export REGISTRY="registry.sztaki.dev:443"
 
 docker build -t $NAMESPACE/$APPLICATION:$BUILD_VERSION -t $NAMESPACE/$APPLICATION:latest -f $APPLICATION/src/main/resources/Dockerfile $APPLICATION/target/scala-2.12/
