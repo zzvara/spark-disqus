@@ -3,10 +3,8 @@ package hu.sztaki.spark.disqus
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
 
-import akka.http.scaladsl.client.RequestBuilding.Post
 import hu.sztaki.spark.disqus.Job.{Guessed, Registry}
 import org.apache.spark.rdd.RDD
-import org.apache.spark.streaming.dstream.DStream
 import org.apache.spark.streaming.scheduler.{
   StreamingListener,
   StreamingListenerBatchCompleted,
@@ -30,7 +28,7 @@ case class Job(outputs: Iterable[RDD[Result] => Unit])(implicit configuration: C
     new StreamingContext(
       batch,
       Seconds(
-        configuration.get[Duration]("stube.spark.streaming.batch-duration").toSeconds
+        configuration.get[Duration]("squs.spark.streaming.batch-duration").toSeconds
       )
     )
 
@@ -42,20 +40,22 @@ case class Job(outputs: Iterable[RDD[Result] => Unit])(implicit configuration: C
 
   protected val & = new Serializable {
 
-    val key = configuration.get[String]("stube.search.key")
+    val `limited-counter` =
+      configuration.get[Int]("squs.search.limited-counter")
 
-    val comment = new Serializable {
-
-      val `maximum-results-per-search` =
-        configuration.get[Int]("stube.search.comment.maximum-results-per-search")
-
-      val ordering =
-        configuration.get[String]("stube.search.comment.ordering")
-          .ensuring(List("time", "relevance").contains(_))
-
-    }
+    val `keywords-path` =
+      configuration.get[String]("squs.search.keywords-path")
 
   }
+
+  protected val keywords = scala.io.Source.fromInputStream(
+    getClass.getResourceAsStream(&.`keywords-path`),
+    "UTF-8"
+  ).getLines().map {
+    line =>
+      val split = line.split(""",""")
+      Request(split(0), Some(split(1)))
+  }.toSeq
 
   streaming.addStreamingListener(new StreamingListener {
 
@@ -76,9 +76,6 @@ case class Job(outputs: Iterable[RDD[Result] => Unit])(implicit configuration: C
 
   @transient protected var results: RDD[Result] = batch.emptyRDD[Result]
 
-  @transient protected val limitedCounterConfiguration =
-    configuration.get[Int]("grinder.feeders.disqus.limited-counter")
-
   protected var limitedForRounds = 0
 
   def isLimited: Boolean = limitedForRounds > 0
@@ -89,19 +86,19 @@ case class Job(outputs: Iterable[RDD[Result] => Unit])(implicit configuration: C
 
   def limitDetected(): Unit = {
     log.info("Disqus API limited me. Sad.")
-    limitedForRounds = limitedCounterConfiguration
+    limitedForRounds = &.`limited-counter`
   }
 
-  protected var mappingsCheckpointFrequency =
-    configuration.get[Int]("grinder.feeders.disqus.checkpoint-frequency")
-
-  protected var mappingsUpdates = 0
+  protected var queue: mutable.Queue[RDD[Request]] = _
 
   def initialize(): Unit = {
-    var mappings = batch.makeRDD(Seq.empty[(String, Mapping)])
+    val mappings = batch.makeRDD(Seq.empty[(String, Mapping)])
+
+    queue = new mutable.Queue[RDD[Request]]()
+    queue.enqueue(batch.makeRDD(keywords))
 
     streaming
-      .queueStream(new mutable.Queue[RDD[Request]]())
+      .queueStream(queue)
       .map {
         x => Fetcher.host(x.thread) -> x
       }

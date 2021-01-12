@@ -7,15 +7,13 @@ import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.model.{ContentTypes, HttpMethods, HttpRequest, HttpResponse}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
-import akka.stream.TLSRole.client
-import org.apache.spark.util.AccumulatorV2
 import org.json4s.JsonAST.JString
 import org.json4s.jackson.JsonMethods.parse
 import org.json4s.{DefaultFormats, JValue}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.concurrent.{Await, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class Fetcher(implicit configuration: Configuration) extends Logger {
   protected lazy val client = Http(actor.System.get)
@@ -23,15 +21,17 @@ class Fetcher(implicit configuration: Configuration) extends Logger {
 
   implicit protected lazy val materializer = Materializer.createMaterializer(actor.System.get)
 
-  protected val publicKey = configuration.get[String]("grinder.feeders.disqus.publicKey")
-  protected val privateKey = configuration.get[String]("grinder.feeders.disqus.privateKey")
+  protected val & = new {
+    val `public-key` = configuration.get[String]("squs.search.fetcher.public-key")
+    val `private-key` = configuration.get[String]("squs.search.fetcher.private-key")
+  }
 
   @transient implicit protected lazy val defaultFormat: DefaultFormats.type = DefaultFormats
 
   def trending(forum: String): Future[JValue] = {
     val URL = s"https://disqus.com/api/3.0/trends/listThreads.json?" +
-      s"api_key=$publicKey&" +
-      s"api_secret=$privateKey&forum=$forum"
+      s"api_key=${&.`public-key`}&" +
+      s"api_secret=${&.`private-key`}&forum=$forum"
     log.trace("Getting trending shit from forum [{}] with URL [{}].", forum, URL)
 
     client.singleRequest(
@@ -68,8 +68,8 @@ class Fetcher(implicit configuration: Configuration) extends Logger {
     require(next.split(""":""").length == 3, "Does not look like a valid Disqus cursor format!")
 
     val URL = s"https://disqus.com/api/3.0/posts/list.json?" +
-      s"api_key=$publicKey&" +
-      s"api_secret=$privateKey&cursor=$next"
+      s"api_key=${&.`public-key`}&" +
+      s"api_secret=${&.`private-key`}&cursor=$next"
     log.trace(
       "Stepping with cursor from Disqus using next [{}] with URL [{}] (host [{}]).",
       next,
@@ -164,8 +164,8 @@ class Fetcher(implicit configuration: Configuration) extends Logger {
 
       val URL =
         s"https://disqus.com/api/3.0/posts/list.json?" +
-          s"api_key=$publicKey&" +
-          s"api_secret=$privateKey&limit=100&forum=$currentTryOut&thread$queryType=$thread"
+          s"api_key=${&.`public-key`}&" +
+          s"api_secret=${&.`private-key`}&limit=100&forum=$currentTryOut&thread$queryType=$thread"
 
       log.trace(
         "Fetching posts from Disqus using thread [{}] with URL [{}].",
