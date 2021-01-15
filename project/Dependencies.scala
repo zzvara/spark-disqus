@@ -17,7 +17,7 @@ object Dependencies {
     "org.slf4j" % "slf4j-log4j12" % "1.7.30",
     "com.typesafe.akka" %% "akka-actor" % "2.6.11",
     "com.typesafe.akka" %% "akka-stream" % "2.6.11",
-    "com.typesafe.akka" %% "akka-http" % "10.2.1",
+    "com.typesafe.akka" %% "akka-http" % "10.2.2",
     "org.apache.spark" %% "spark-core" % "3.1.0",
     "com.softwaremill.retry" %% "retry" % "0.3.3",
     ("org.apache.spark" %% "spark-streaming" % "3.1.0")
