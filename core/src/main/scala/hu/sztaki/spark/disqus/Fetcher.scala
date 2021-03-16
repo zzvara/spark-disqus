@@ -19,7 +19,7 @@ class Fetcher(implicit configuration: Configuration) extends Logger {
   protected lazy val client = Http(actor.System.get)
   implicit protected val timeout: FiniteDuration = 500 millis
 
-  implicit protected lazy val materializer = Materializer.createMaterializer(actor.System.get)
+  implicit protected lazy val materializer: Materializer = Materializer.createMaterializer(actor.System.get)
 
   protected val & = new {
 

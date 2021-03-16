@@ -17,7 +17,7 @@ import scala.collection.{immutable, mutable}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, DurationInt}
 import scala.concurrent.{Await, Future}
-import scala.language.{existentials, reflectiveCalls}
+import scala.language.reflectiveCalls
 
 @SerialVersionUID(-1)
 case class Job(outputs: Iterable[RDD[Result] => Unit])(implicit configuration: Configuration)
