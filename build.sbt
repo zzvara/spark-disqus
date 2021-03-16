@@ -14,7 +14,13 @@ Project.inConfig(Test)(baseAssemblySettings)
 lazy val shadeRules = Seq()
 
 lazy val mergeStrategy: PartialFunction[String, MergeStrategy] = {
-  case _ => MergeStrategy.first
+  case x if x.endsWith("module-info.class")             => MergeStrategy.rename
+  case x if x.endsWith("actor.conf")                    => MergeStrategy.first
+  case x if x.endsWith("scala-java8-compat.properties") => MergeStrategy.rename
+  case x if x.endsWith("io.netty.versions.properties")  => MergeStrategy.rename
+  case x if x.endsWith("native-image.properties")       => MergeStrategy.rename
+  case x if x.endsWith("reflection-config.json")        => MergeStrategy.rename
+  case x if x.endsWith("UnusedStubClass.class")         => MergeStrategy.discard
 }
 
 lazy val commonSettings = Seq(
