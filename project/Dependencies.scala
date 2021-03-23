@@ -8,7 +8,7 @@ object Dependencies {
     "org.scala-lang" % "scala-compiler" % currentScalaVersion,
     "org.scalatest" %% "scalatest" % "3.3.0-SNAP3" % "test",
     "com.typesafe" % "config" % "1.4.1",
-    "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
+    "com.typesafe.scala-logging" %% "scala-logging" % "3.9.3",
     "com.typesafe.akka" %% "akka-actor" % "2.6.13",
     "com.typesafe.akka" %% "akka-stream" % "2.6.13",
     "com.typesafe.akka" %% "akka-http" % "10.2.4",
