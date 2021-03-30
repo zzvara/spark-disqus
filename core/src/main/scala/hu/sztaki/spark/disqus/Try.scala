@@ -4,7 +4,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, Future}
 import scala.reflect.ClassTag
-import scala.util.{Failure, Success}
 
 /**
   * Utility methods for common error handling routines.
