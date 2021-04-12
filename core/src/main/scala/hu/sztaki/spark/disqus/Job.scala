@@ -1,6 +1,8 @@
 package hu.sztaki.spark.disqus
 
-import hu.sztaki.spark.{Logger, Try}
+import com.sksamuel.elastic4s.Response
+import hu.sztaki.spark.{Comment, Elastic, Logger, Thread, Try}
+import hu.sztaki.spark
 
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
@@ -13,6 +15,7 @@ import org.apache.spark.streaming.scheduler.{
 }
 import org.apache.spark.streaming.{Seconds, StreamingContext, StreamingContextState}
 import org.apache.spark.{SparkConf, SparkContext}
+import retry.Success
 
 import scala.collection.{immutable, mutable}
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -46,6 +49,17 @@ case class Job(outputs: Iterable[RDD[Result] => Unit])(implicit configuration: C
 
     val `keywords-path` =
       configuration.get[String]("squs.search.keywords-path")
+
+    val output = new Serializable {
+
+      val `elastic-search` = new Serializable {
+
+        val enabled =
+          configuration.get[Boolean]("squs.output.elastic-search.enabled")
+
+      }
+
+    }
 
   }
 
@@ -189,6 +203,26 @@ case class Job(outputs: Iterable[RDD[Result] => Unit])(implicit configuration: C
             }
 
             outputs.foreach(_.apply(results))
+
+            if (&.output.`elastic-search`.enabled) {
+              results
+                .filter(_.isInstanceOf[Success])
+                .flatMap(_.asSuccess.comments)
+                .foreachPartition {
+                  partition =>
+                    implicit val insertSuccess = new retry.Success[Response[_]](_.isSuccess)
+
+                    val elastic = Elastic.Cache.get()
+
+                    Await.result(
+                      Future.sequence(partition.map {
+                        elastic.insertAsync
+                      }),
+                      Int.MaxValue seconds
+                    )
+
+                }
+            }
           } else {
             decreaseLimited()
           }
