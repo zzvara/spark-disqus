@@ -19,11 +19,20 @@ class Fetcher(implicit configuration: Configuration) extends Logger {
   protected lazy val client = Http(actor.System.get)
   implicit protected val timeout: FiniteDuration = 500 millis
 
-  implicit protected lazy val materializer = Materializer.createMaterializer(actor.System.get)
+  implicit protected lazy val materializer: Materializer = Materializer.createMaterializer(actor.System.get)
 
   protected val & = new {
-    val `public-key` = configuration.get[String]("squs.search.fetcher.public-key")
-    val `private-key` = configuration.get[String]("squs.search.fetcher.private-key")
+
+    val `public-key` = System.getenv().getOrDefault(
+      "SQUS_SEARCH_FETCHER_PUBLIC_KEY",
+      configuration.get[String]("squs.search.fetcher.public-key")
+    )
+
+    val `private-key` = System.getenv().getOrDefault(
+      "SQUS_SEARCH_FETCHER_PRIVATE_KEY",
+      configuration.get[String]("squs.search.fetcher.private-key")
+    )
+
   }
 
   @transient implicit protected lazy val defaultFormat: DefaultFormats.type = DefaultFormats

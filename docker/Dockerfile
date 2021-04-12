@@ -1,17 +1,14 @@
-# Requirements:
-#   - The acompaning `build-and-push.sh` must be run from project root.
+FROM zzvara/spark:3.1.1-SNAPSHOT
 
-# Note: Do not use this Dockerfile directly, as the `build-and-push.sh` must do additional prepares
-#       before the image can be built.
+ARG module
+ARG version
 
-FROM registry.sztaki.dev:443/application/scala:latest
+USER root
 
-ENV MEMORY "1"
-ENV JAVA_OPTIONS "-Xmx${MEMORY}G"
-ENV MAIN_CLASS ""
+RUN mkdir /opt/spark/configuration || exit 1
+RUN mkdir /opt/spark/dependencies || exit 1
 
-WORKDIR /root
+COPY ${module}-assembly-${version}.jar /opt/spark/dependencies/${module}-assembly-${version}.jar
+RUN ln -s /opt/spark/dependencies/${module}-assembly-${version}.jar /opt/spark/dependencies/application.jar
 
-COPY core-assembly-*.jar /root/
-
-CMD java -server $JAVA_OPTIONS -cp "override-configuration/:*" $MAIN_CLASS
+ENTRYPOINT [ "/opt/entrypoint.sh" ]
