@@ -37,7 +37,7 @@ while true; do
 done
 
 cp version.sbt version
-sed -i 's/version\ in\ ThisBuild\ \:\=\ \"//g' version
+sed -i 's/ThisBuild\ \/\ version\ \:\=\ \"//g' version
 sed -i 's/\"//g' version
 
 export BUILD_VERSION=$(<version)
