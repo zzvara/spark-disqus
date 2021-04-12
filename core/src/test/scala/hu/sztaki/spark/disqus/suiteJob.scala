@@ -1,7 +1,7 @@
 package hu.sztaki.spark.disqus
 
 class suiteJob extends stubeFunSpec {
-  describe("The Youtube Spark job") {
+  describe("The Disqus Spark job") {
     var job: Option[Job] = None
     var results: Iterable[Result] = Iterable.empty
 

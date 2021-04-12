@@ -108,7 +108,10 @@ lazy val commonSettings = Seq(
   },
   publishConfiguration := publishConfiguration.value.withOverwrite(true),
   publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true),
-  credentials += Credentials(Path.userHome / ".sbt" / ".credentials"),
+  credentials += Credentials(Path.userHome / ".sbt" / ".credentials.sztaki.dev"),
+  publishTo := Some(
+    "Artifactory Realm".at(s"https://artifactory.sztaki.dev/artifactory/sbt-release/")
+  ),
   resolvers ++= Seq(
     "Maven Central".at("https://repo1.maven.org/maven2/")
   )
