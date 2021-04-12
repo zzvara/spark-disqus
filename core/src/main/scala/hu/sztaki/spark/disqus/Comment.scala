@@ -1,42 +1,12 @@
 package hu.sztaki.spark.disqus
 
+import hu.sztaki.spark
+import hu.sztaki.spark.Comment
+import hu.sztaki.spark.Comment.Flags
 import org.json4s.{DefaultFormats, JValue}
 import org.json4s.JsonAST.{JArray, JString}
 
-case class Comment(
-  forum: String,
-  thread: String,
-  content: String,
-  parent: Option[Comment.Parent],
-  internalID: Option[String],
-  createdAt: Option[Long],
-  negativeVotes: Option[Int],
-  positiveVotes: Option[Int],
-  nReported: Option[Int],
-  author: Option[Comment.Author],
-  flags: Option[Comment.Flags])
-
 object Comment extends Logger {
-
-  case class Author(
-    ID: Option[String] = None,
-    alias: Option[String] = None,
-    name: Option[String] = None,
-    mail: Option[String] = None,
-    resource: Option[String] = None,
-    createdAt: Option[Long] = None)
-
-  case class Parent(
-    internal: String,
-    author: Option[Author] = None)
-
-  case class Flags(
-    spam: Option[Boolean] = None,
-    deleted: Option[Boolean] = None,
-    approved: Option[Boolean] = None,
-    flagged: Option[Boolean] = None,
-    highlighted: Option[Boolean] = None,
-    edited: Option[Boolean] = None)
 
   implicit val parseFormat: DefaultFormats.type = DefaultFormats
   val dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
@@ -50,26 +20,29 @@ object Comment extends Logger {
               val content = (v \ "raw_message").extract[String]
 
               val author = v \ "author"
-              List(Comment(
+              List(spark.Comment(
                 (v \ "forum").extract[String],
                 (v \ "thread").extract[String],
                 content,
-                parent = (v \ "parent").extractOpt[Int].map(_.toString).map(Comment.Parent(_)),
                 internalID = (v \ "id").extractOpt[String],
-                createdAt =
+                parent =
+                  (v \ "parent").extractOpt[Int].map(_.toString).map(spark.Comment.Parent(_)),
+                created =
                   Try.eatShit[Throwable, java.util.Date](
                     dateFormat.parse((author \ "createdAt").extract[String])
                   ).map(_.getTime),
-                negativeVotes = (v \ "dislikes").extractOpt[Int],
-                positiveVotes = (v \ "likes").extractOpt[Int],
-                nReported = (v \ "numReports").extractOpt[Int],
-                author = Some(Comment.Author(
+                metrics = Some(spark.Comment.Metrics(
+                  negative = (v \ "dislikes").extractOpt[Int],
+                  positive = (v \ "likes").extractOpt[Int],
+                  reported = (v \ "numReports").extractOpt[Int]
+                )),
+                author = Some(spark.Comment.Author(
+                  identifier = (author \ "id").extractOpt[String],
                   name = (author \ "name").extractOpt[String],
                   mail = (author \ "email").extract[Option[String]],
-                  ID = (author \ "id").extractOpt[String],
                   alias = (author \ "username").extractOpt[String],
                   resource = (author \ "profileUrl").extractOpt[String],
-                  createdAt =
+                  created =
                     Try.eatShit[Throwable, java.util.Date](
                       dateFormat.parse((author \ "joinedAt").extract[String])
                     ).map(_.getTime)

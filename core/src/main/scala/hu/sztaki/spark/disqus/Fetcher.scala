@@ -1,15 +1,16 @@
 package hu.sztaki.spark.disqus
 
 import java.net.URL
-
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.model.{ContentTypes, HttpMethods, HttpRequest, HttpResponse}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
+import hu.sztaki.spark.Comment
 import org.json4s.JsonAST.JString
 import org.json4s.jackson.JsonMethods.parse
 import org.json4s.{DefaultFormats, JValue}
+import scala.language.reflectiveCalls
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
@@ -19,7 +20,8 @@ class Fetcher(implicit configuration: Configuration) extends Logger {
   protected lazy val client = Http(actor.System.get)
   implicit protected val timeout: FiniteDuration = 500 millis
 
-  implicit protected lazy val materializer: Materializer = Materializer.createMaterializer(actor.System.get)
+  implicit protected lazy val materializer: Materializer =
+    Materializer.createMaterializer(actor.System.get)
 
   protected val & = new {
 
