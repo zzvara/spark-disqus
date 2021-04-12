@@ -25,7 +25,7 @@ lazy val mergeStrategy: PartialFunction[String, MergeStrategy] = {
 
 lazy val commonSettings = Seq(
   organizationName := "SZTAKI",
-  organization := "hu.sztaki.spark",
+  organization := "hu.sztaki.spark.squs",
   scalaVersion := "2.12.12",
   semanticdbEnabled := true,
   semanticdbVersion := scalafixSemanticdb.revision,
@@ -110,7 +110,7 @@ lazy val commonSettings = Seq(
   publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true),
   credentials += Credentials(Path.userHome / ".sbt" / ".credentials.sztaki.dev"),
   publishTo := Some(
-    "Artifactory Realm".at(s"https://artifactory.sztaki.dev/artifactory/sbt-release/")
+    "Artifactory Realm".at("https://artifactory.sztaki.dev/artifactory/sbt-release/")
   ),
   resolvers ++= Seq(
     "Maven Central".at("https://repo1.maven.org/maven2/")
