@@ -44,7 +44,7 @@ export BUILD_VERSION=$(<version)
 export NAMESPACE="zzvara"
 export APPLICATION="spark-disqus"
 export BUILD_DIRECTORY="docker"
-export REGISTRY="https://index.docker.io/v1"
+export REGISTRY="index.docker.io"
 
 cp -r $module/target/scala-2.12/$module-assembly-$BUILD_VERSION.jar $BUILD_DIRECTORY/$module-assembly-$BUILD_VERSION.jar || exit 1
 
