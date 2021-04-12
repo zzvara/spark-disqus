@@ -6,12 +6,12 @@ import akka.http.scaladsl.model.headers.`Content-Type`
 import akka.http.scaladsl.model.{ContentTypes, HttpMethods, HttpRequest, HttpResponse}
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
-import hu.sztaki.spark.Comment
+import hu.sztaki.spark.{Comment, Logger}
 import org.json4s.JsonAST.JString
 import org.json4s.jackson.JsonMethods.parse
 import org.json4s.{DefaultFormats, JValue}
-import scala.language.reflectiveCalls
 
+import scala.language.reflectiveCalls
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.concurrent.{Await, Future}

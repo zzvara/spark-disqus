@@ -1,7 +1,7 @@
 package hu.sztaki.spark.disqus
 
 import hu.sztaki.spark
-import hu.sztaki.spark.Comment
+import hu.sztaki.spark.{Comment, Logger, Try}
 import hu.sztaki.spark.Comment.Flags
 import org.json4s.{DefaultFormats, JValue}
 import org.json4s.JsonAST.{JArray, JString}

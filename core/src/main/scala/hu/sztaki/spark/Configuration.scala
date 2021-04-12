@@ -1,15 +1,14 @@
-package hu.sztaki.spark.disqus.configuration
-
-import java.io.{File, Serializable}
-import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Path, Paths}
-import java.util.Properties
+package hu.sztaki.spark
 
 import com.typesafe.config.ConfigException.{Missing, WrongType}
 import com.typesafe.config._
-import hu.sztaki.spark.disqus.configuration.Configuration.Exception.Restricted
-import hu.sztaki.spark.disqus.{Factory, Logger}
+import hu.sztaki.spark.Configuration.Exception.Restricted
 
+import java.io.{File, Serializable}
+import java.lang.Thread
+import java.nio.charset.StandardCharsets
+import java.nio.file.{Files, Path, Paths}
+import java.util.Properties
 import scala.collection.JavaConverters._
 import scala.concurrent.duration.Duration
 import scala.language.reflectiveCalls
@@ -56,7 +55,7 @@ abstract class Configuration[
       s"Overwrite configuration file [${_resource.origin().resource()}] read from " +
       s"[${_resource.origin().filename()}]. Called from:"
   )
-  Thread.currentThread().getStackTrace.slice(5, 10).foreach {
+  java.lang.Thread.currentThread().getStackTrace.slice(5, 10).foreach {
     e => log.info("  " + e.toString)
   }
 
@@ -334,7 +333,7 @@ abstract class Configuration[
 
 object Configuration {
 
-  protected[configuration] var nInstances = new {
+  protected[spark] var nInstances = new {
     protected val map = scala.collection.mutable.Map.empty[String, Int]
 
     def updateInstanceCount(className: String): Int =

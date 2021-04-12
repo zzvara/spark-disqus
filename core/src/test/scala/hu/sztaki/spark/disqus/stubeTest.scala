@@ -1,5 +1,6 @@
 package hu.sztaki.spark.disqus
 
+import hu.sztaki.spark.Logger
 import org.scalatest.concurrent.Eventually
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.time.{Seconds, Span}

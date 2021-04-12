@@ -1,8 +1,9 @@
 package hu.sztaki.spark.disqus
 
+import hu.sztaki.spark.{Logger, Try}
+
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
-
 import hu.sztaki.spark.disqus.Job.{Guessed, Registry}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.scheduler.{

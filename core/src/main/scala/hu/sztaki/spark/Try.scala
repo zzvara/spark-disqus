@@ -1,9 +1,9 @@
-package hu.sztaki.spark.disqus
+package hu.sztaki.spark
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, Future}
 import scala.reflect.ClassTag
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * Utility methods for common error handling routines.

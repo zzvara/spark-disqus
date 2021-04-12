@@ -1,8 +1,11 @@
 package hu.sztaki.spark.disqus
 
+import hu.sztaki.spark
+import hu.sztaki.spark.Factory
+
 class Configuration(silent: Boolean = false)(implicit
 factory: Factory.forConfiguration[Configuration])
- extends configuration.Configuration[Configuration](
+ extends spark.Configuration[Configuration](
    "squs.conf",
    "squs.defaults.conf",
    true,
