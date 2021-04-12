@@ -5,7 +5,6 @@ import com.typesafe.config._
 import hu.sztaki.spark.Configuration.Exception.Restricted
 
 import java.io.{File, Serializable}
-import java.lang.Thread
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths}
 import java.util.Properties
