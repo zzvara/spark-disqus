@@ -1,8 +1,7 @@
 package hu.sztaki.spark.disqus
 
 import com.sksamuel.elastic4s.Response
-import hu.sztaki.spark.{Comment, Elastic, Logger, Thread, Try}
-import hu.sztaki.spark
+import hu.sztaki.spark.{Elastic, Logger, Try}
 
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
@@ -15,7 +14,6 @@ import org.apache.spark.streaming.scheduler.{
 }
 import org.apache.spark.streaming.{Seconds, StreamingContext, StreamingContextState}
 import org.apache.spark.{SparkConf, SparkContext}
-import retry.Success
 
 import scala.collection.{immutable, mutable}
 import scala.concurrent.ExecutionContext.Implicits.global

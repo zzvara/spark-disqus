@@ -9,13 +9,12 @@ import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties, Response}
 import hu.sztaki.spark
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
 import org.apache.http.client.config.RequestConfig.Builder
-import org.apache.http.conn.ssl.{TrustAllStrategy, TrustSelfSignedStrategy}
+import org.apache.http.conn.ssl.TrustAllStrategy
 import org.apache.http.impl.client.BasicCredentialsProvider
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder
 import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy
 import org.apache.http.ssl.SSLContexts
 import org.elasticsearch.client.RestClientBuilder
-import org.elasticsearch.client.RestClientBuilder.RequestConfigCallback
 import org.json4s.jackson.Serialization
 import org.json4s.{DefaultFormats, FullTypeHints}
 import retry.Success
