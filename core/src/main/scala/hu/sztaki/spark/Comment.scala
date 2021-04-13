@@ -3,6 +3,7 @@ package hu.sztaki.spark
 import hu.sztaki.spark.Comment.{Identifier, Metrics}
 
 case class Comment(
+  source: Source.Value,
   forum: String,
   thread: String,
   content: String,
@@ -39,7 +40,7 @@ object Comment {
     reported: Option[Int])
 
   case class Author(
-    identifier: Option[String] = None,
+    internalID: Option[String] = None,
     alias: Option[String] = None,
     name: Option[String] = None,
     mail: Option[String] = None,
@@ -47,7 +48,7 @@ object Comment {
     created: Option[Long] = None)
 
   case class Parent(
-    internal: String,
+    internalID: String,
     author: Option[Author] = None)
 
   case class Flags(

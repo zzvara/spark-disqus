@@ -2,11 +2,26 @@ package hu.sztaki.spark
 
 import com.sksamuel.elastic4s.ElasticApi.indexInto
 import com.sksamuel.elastic4s.ElasticDsl._
+import com.sksamuel.elastic4s.fields.{
+  BooleanField,
+  DateField,
+  DoubleField,
+  IntegerField,
+  KeywordField,
+  ObjectField,
+  TextField
+}
 import com.sksamuel.elastic4s.http.JavaClient
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
-import com.sksamuel.elastic4s.requests.indexes.IndexResponse
+import com.sksamuel.elastic4s.requests.indexes.{
+  CreateIndexRequest,
+  CreateIndexTemplateRequest,
+  IndexResponse
+}
+import com.sksamuel.elastic4s.requests.mappings.MappingDefinition
 import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties, Response}
 import hu.sztaki.spark
+import hu.sztaki.spark.Elastic.formats
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
 import org.apache.http.client.config.RequestConfig.Builder
 import org.apache.http.conn.ssl.TrustAllStrategy
@@ -92,6 +107,21 @@ class Elastic()(implicit configuration: disqus.Configuration) extends Logger {
         )
       ))
     }
+
+  initializeIndex()
+
+  def initializeIndex(): Unit = {
+    if (!Await.result(
+        client.execute(
+          getIndex(&.index)
+        ).map(_.isSuccess),
+        Int.MaxValue seconds
+      )) {
+      client.execute(
+        Elastic.dataIndexCreateRequest(&.index)
+      )
+    }
+  }
 
   implicit val insertSuccess: Success[Response[_]] = new Success[Response[_]](_.isSuccess)
 
@@ -182,5 +212,79 @@ object Elastic {
       }
 
   }
+
+  def dataIndexCreateRequest: String => CreateIndexRequest =
+    index =>
+      CreateIndexRequest(
+        index,
+        mapping = Some(
+          MappingDefinition(
+            source = Some(true),
+            properties = Seq(
+              KeywordField("source"),
+              KeywordField("type"),
+              KeywordField("forum"),
+              KeywordField("thread"),
+              TextField("title", analyzer = Some("hungarian_analyzer")),
+              TextField("description", analyzer = Some("hungarian_analyzer")),
+              TextField(
+                "content",
+                analyzer = Some("hungarian_analyzer"),
+                fields = List(
+                  KeywordField("raw")
+                )
+              ),
+              ObjectField(
+                "metrics",
+                properties = Seq(
+                  DoubleField("negative"),
+                  DoubleField("positive"),
+                  IntegerField("reported")
+                )
+              ),
+              KeywordField("internalID"),
+              DateField("date"),
+              ObjectField(
+                "author",
+                properties = Seq(
+                  KeywordField("internalID"),
+                  KeywordField("alias"),
+                  KeywordField("name"),
+                  KeywordField("mail"),
+                  KeywordField("resource"),
+                  DateField("created")
+                )
+              ),
+              ObjectField(
+                "parent",
+                properties = Seq(
+                  KeywordField("internalID"),
+                  ObjectField(
+                    "author",
+                    properties = Seq(
+                      KeywordField("alias"),
+                      KeywordField("name"),
+                      KeywordField("mail"),
+                      KeywordField("resource"),
+                      DateField("created")
+                    )
+                  )
+                )
+              ),
+              ObjectField(
+                "flags",
+                properties = Seq(
+                  BooleanField("spam"),
+                  BooleanField("deleted"),
+                  BooleanField("approved"),
+                  BooleanField("flagged"),
+                  BooleanField("highlighted"),
+                  BooleanField("edited")
+                )
+              )
+            )
+          )
+        )
+      )
 
 }

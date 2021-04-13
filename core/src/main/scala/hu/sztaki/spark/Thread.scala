@@ -3,6 +3,7 @@ package hu.sztaki.spark
 import hu.sztaki.spark.Thread.Identifier
 
 case class Thread(
+  source: Source.Value,
   forum: String,
   thread: String,
   description: Option[String],

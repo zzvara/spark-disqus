@@ -1,11 +1,8 @@
 package hu.sztaki.spark.disqus
 
 import com.sksamuel.elastic4s.Response
-import hu.sztaki.spark.{Elastic, Logger, Try}
-
-import java.net.URL
-import java.util.concurrent.atomic.AtomicInteger
 import hu.sztaki.spark.disqus.Job.{Guessed, Registry}
+import hu.sztaki.spark.{Elastic, Logger, Try}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.scheduler.{
   StreamingListener,
@@ -15,6 +12,8 @@ import org.apache.spark.streaming.scheduler.{
 import org.apache.spark.streaming.{Seconds, StreamingContext, StreamingContextState}
 import org.apache.spark.{SparkConf, SparkContext}
 
+import java.net.URL
+import java.util.concurrent.atomic.AtomicInteger
 import scala.collection.{immutable, mutable}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, DurationInt}

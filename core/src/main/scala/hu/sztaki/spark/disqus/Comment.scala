@@ -1,7 +1,7 @@
 package hu.sztaki.spark.disqus
 
 import hu.sztaki.spark
-import hu.sztaki.spark.{Comment, Logger, Try}
+import hu.sztaki.spark.{Comment, Logger, Source, Try}
 import hu.sztaki.spark.Comment.Flags
 import org.json4s.{DefaultFormats, JValue}
 import org.json4s.JsonAST.{JArray, JString}
@@ -21,6 +21,7 @@ object Comment extends Logger {
 
               val author = v \ "author"
               List(spark.Comment(
+                Source.Disqus,
                 (v \ "forum").extract[String],
                 (v \ "thread").extract[String],
                 content,
@@ -37,7 +38,7 @@ object Comment extends Logger {
                   reported = (v \ "numReports").extractOpt[Int]
                 )),
                 author = Some(spark.Comment.Author(
-                  identifier = (author \ "id").extractOpt[String],
+                  internalID = (author \ "id").extractOpt[String],
                   name = (author \ "name").extractOpt[String],
                   mail = (author \ "email").extract[Option[String]],
                   alias = (author \ "username").extractOpt[String],
