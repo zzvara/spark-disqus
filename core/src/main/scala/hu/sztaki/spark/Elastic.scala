@@ -15,13 +15,11 @@ import com.sksamuel.elastic4s.http.JavaClient
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
 import com.sksamuel.elastic4s.requests.indexes.{
   CreateIndexRequest,
-  CreateIndexTemplateRequest,
   IndexResponse
 }
 import com.sksamuel.elastic4s.requests.mappings.MappingDefinition
 import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties, Response}
 import hu.sztaki.spark
-import hu.sztaki.spark.Elastic.formats
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
 import org.apache.http.client.config.RequestConfig.Builder
 import org.apache.http.conn.ssl.TrustAllStrategy
