@@ -13,10 +13,7 @@ import com.sksamuel.elastic4s.fields.{
 }
 import com.sksamuel.elastic4s.http.JavaClient
 import com.sksamuel.elastic4s.requests.common.RefreshPolicy
-import com.sksamuel.elastic4s.requests.indexes.{
-  CreateIndexRequest,
-  IndexResponse
-}
+import com.sksamuel.elastic4s.requests.indexes.{CreateIndexRequest, IndexResponse}
 import com.sksamuel.elastic4s.requests.mappings.MappingDefinition
 import com.sksamuel.elastic4s.{ElasticClient, ElasticProperties, Response}
 import hu.sztaki.spark
@@ -91,6 +88,8 @@ class Elastic()(implicit configuration: disqus.Configuration) extends Logger {
             .setDefaultCredentialsProvider(authenticationProvider)
       }
 
+      log.info("Creating Elasticsearch client to host [{}].", &.host)
+
       ElasticClient(JavaClient(
         props = ElasticProperties(
           &.host
@@ -115,6 +114,7 @@ class Elastic()(implicit configuration: disqus.Configuration) extends Logger {
         ).map(_.isSuccess),
         Int.MaxValue seconds
       )) {
+      log.trace("Index with name [{}] not found. Creating index.", &.index)
       client.execute(
         Elastic.dataIndexCreateRequest(&.index)
       )
