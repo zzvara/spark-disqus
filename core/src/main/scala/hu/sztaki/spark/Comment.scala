@@ -7,6 +7,7 @@ case class Comment(
   forum: String,
   thread: String,
   content: String,
+  language: Language.Value = Language.Unknown,
   internalID: Option[String],
   parent: Option[Comment.Parent],
   created: Option[Long],

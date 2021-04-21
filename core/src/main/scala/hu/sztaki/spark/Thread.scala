@@ -6,6 +6,7 @@ case class Thread(
   source: Source.Value,
   forum: String,
   thread: String,
+  language: Language.Value = Language.Unknown,
   description: Option[String],
   title: Option[String],
   created: Option[Long])
