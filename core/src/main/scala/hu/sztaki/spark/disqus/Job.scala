@@ -302,7 +302,7 @@ object Job extends Entrypoint {
   }
 
   def main(arguments: Array[String]): Unit = {
-    Job(List(_.count()))
+    Job(List(_.count())).start(block = true)
   }
 
 }
